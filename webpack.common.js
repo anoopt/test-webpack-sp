@@ -1,5 +1,4 @@
 var webpack = require('webpack');
-var SPSaveWebpackPlugin = require('spsave-webpack-plugin');
 
 module.exports = {
     
@@ -37,20 +36,6 @@ module.exports = {
         new webpack.optimize.CommonsChunkPlugin({
             name: "vendor",
             minChunks: Infinity
-        }),
-        new SPSaveWebpackPlugin({
-            "coreOptions": {
-                "checkin": true,
-                "checkinType": 1,
-                "siteUrl": ""
-            },
-            "credentialOptions": {
-                username: '',
-                password: ''
-            },
-            "fileOptions": {
-                "folder": "Style Library/test-webpack-sharepoint"
-            }
         })
     ]
 };

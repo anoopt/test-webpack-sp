@@ -20,7 +20,7 @@ export class Hello extends React.Component<HelloProps, IHelloState> {
       }
 
     public render(): React.ReactElement<HelloProps> {
-        return <h1>Web Title {this.state.webTitle}!</h1>;
+        return <h1>Web Title is {this.state.webTitle}!</h1>;
     }
 
     private async getWebTitle(): Promise<void>{
