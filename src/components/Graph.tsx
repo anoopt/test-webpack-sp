@@ -3,13 +3,14 @@ import * as $ from "jquery";
 
 interface GraphProps { }
 interface IGraphState {
-    _state: IDisplayProps
+    myData: IDisplayProps
 }
 
 interface IDisplayProps {
     displayName: string;
     givenName: string;
     mobilePhone: string;
+    imageUrl: string;
 }
 
 export class Graph extends React.Component<GraphProps, IGraphState> {
@@ -17,10 +18,11 @@ export class Graph extends React.Component<GraphProps, IGraphState> {
     constructor(props: GraphProps) {
         super(props);
         this.state = {
-            _state: {
+            myData: {
                 displayName: "",
                 givenName: "",
-                mobilePhone: ""
+                mobilePhone: "",
+                imageUrl: ""
             }
         };
     }
@@ -33,23 +35,29 @@ export class Graph extends React.Component<GraphProps, IGraphState> {
          }); */
 
         this.getDetails().then(r => {
-            this.setState({
-                _state: {
-                    displayName: r.displayName,
-                    givenName: r.givenName,
-                    mobilePhone: r.mobilePhone
-                }
+            this.getMyPhotoDef().then(i => {
+                this.setState({
+                    myData: {
+                        displayName: r.displayName,
+                        givenName: r.givenName,
+                        mobilePhone: r.mobilePhone,
+                        imageUrl: i
+                    }
+                })
             })
         });
+
+        this.getMyPhoto();
 
     }
 
     public render(): React.ReactElement<GraphProps> {
         return (
             <div>
-                <p>Your name is {this.state._state.displayName}</p>
-                <p>Your given name is {this.state._state.givenName}</p>
-                <p>Your mobile number is {this.state._state.mobilePhone}</p>
+                <p>Your name is {this.state.myData.displayName},</p>
+                <p>Your given name is {this.state.myData.givenName},</p>
+                <p>Your mobile number is {this.state.myData.mobilePhone}</p>
+                <img src={this.state.myData.imageUrl} />
             </div>);
     }
 
@@ -74,6 +82,50 @@ export class Graph extends React.Component<GraphProps, IGraphState> {
         });
         return dfd.promise();
     } */
+
+    private async getMyPhoto() {
+        const msGraphToken = await this.getMSGraphAccessToken();
+
+        var request = new XMLHttpRequest;
+        request.open("GET", "https://graph.microsoft.com/v1.0/me/Photos/48X48/$value");
+        request.setRequestHeader("Authorization", "Bearer " + msGraphToken);
+        request.responseType = "blob";
+        request.onload = function () {
+            if (request.readyState === 4 && request.status === 200) {
+                var imageElm = document.createElement("img");
+                var reader = new FileReader();
+                reader.onload = function () {
+                    // Add the base64 image to the src attribute
+                    imageElm.src = reader.result;
+                    // Display the user's profile picture
+                    document.getElementsByClassName('user-picture-box')[0].appendChild(imageElm);
+                }
+                reader.readAsDataURL(request.response);
+            }
+        };
+        request.send(null);
+    }
+
+    private async getMyPhotoDef(): Promise<string> {
+        const msGraphToken = await this.getMSGraphAccessToken();
+        let dfd: any = $.Deferred();
+
+        var request = new XMLHttpRequest;
+        request.open("GET", "https://graph.microsoft.com/v1.0/me/Photos/48X48/$value");
+        request.setRequestHeader("Authorization", "Bearer " + msGraphToken);
+        request.responseType = "blob";
+        request.onload = function () {
+            if (request.readyState === 4 && request.status === 200) {
+                var reader = new FileReader();
+                reader.onload = function () {
+                    dfd.resolve(reader.result);
+                }
+                reader.readAsDataURL(request.response);
+            }
+        };
+        request.send(null);
+        return dfd.promise();
+    }
 
     private async getDetails(): Promise<IDisplayProps> {
         const msGraphToken = await this.getMSGraphAccessToken();
