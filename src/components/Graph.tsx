@@ -1,14 +1,12 @@
 import * as React from "react";
 import * as $ from "jquery";
 
-export interface GraphProps { }
-export interface IGraphState { 
-    displayName: string;
-    givenName: string;
-    mobilePhone: string;
- }
+interface GraphProps { }
+interface IGraphState {
+    _state: IDisplayProps
+}
 
-export interface IDisplayProps {
+interface IDisplayProps {
     displayName: string;
     givenName: string;
     mobilePhone: string;
@@ -16,12 +14,14 @@ export interface IDisplayProps {
 
 export class Graph extends React.Component<GraphProps, IGraphState> {
 
-    constructor(props: GraphProps){
+    constructor(props: GraphProps) {
         super(props);
         this.state = {
-            displayName: "",
-            givenName: "",
-            mobilePhone: ""
+            _state: {
+                displayName: "",
+                givenName: "",
+                mobilePhone: ""
+            }
         };
     }
 
@@ -32,23 +32,25 @@ export class Graph extends React.Component<GraphProps, IGraphState> {
             })
          }); */
 
-         this.getDetails().then(r => {
+        this.getDetails().then(r => {
             this.setState({
-                displayName: r.displayName,
-                givenName: r.givenName,
-                mobilePhone: r.mobilePhone
+                _state: {
+                    displayName: r.displayName,
+                    givenName: r.givenName,
+                    mobilePhone: r.mobilePhone
+                }
             })
-         });
-         
-      }
+        });
+
+    }
 
     public render(): React.ReactElement<GraphProps> {
         return (
-        <div>
-            <p>Your Name is {this.state.displayName}!</p>
-            <p>Your Given Name is {this.state.givenName}!</p>
-            <p>Your Mobile Number is {this.state.mobilePhone}!</p>
-        </div>);
+            <div>
+                <p>Your name is {this.state._state.displayName}</p>
+                <p>Your given name is {this.state._state.givenName}</p>
+                <p>Your mobile number is {this.state._state.mobilePhone}</p>
+            </div>);
     }
 
     /* private async getName(): Promise<string> {
@@ -76,26 +78,29 @@ export class Graph extends React.Component<GraphProps, IGraphState> {
     private async getDetails(): Promise<IDisplayProps> {
         const msGraphToken = await this.getMSGraphAccessToken();
         let dfd: any = $.Deferred();
-        $.ajax({
+
+        let ajaxSettings: JQueryAjaxSettings = {
             url: "https://graph.microsoft.com/v1.0/me/",
             headers: {
                 "Accept": "application/json",
                 "Authorization": "Bearer " + msGraphToken
             },
-            success: function (data) {
+            success: (data) => {
                 console.log(data);
                 dfd.resolve(data);
             },
-            error: function (jqxr, errorCode, errorThrown) {
+            error: (jqxr, errorCode, errorThrown) => {
                 console.log(jqxr.responseText);
                 dfd.reject("error");
             }
-        });
+        }
+
+        $.ajax(ajaxSettings);
         return dfd.promise();
     }
 
     private getMSGraphAccessToken(): Promise<string> {
-        
+
         let dfd: any = $.Deferred();
 
         var requestHeaders: any = {
@@ -106,21 +111,23 @@ export class Graph extends React.Component<GraphProps, IGraphState> {
         var resourceData: any = {
             "resource": "https://graph.microsoft.com",
         };
-        $.ajax({
+
+        let ajaxSettings: JQueryAjaxSettings = {
             url: _spPageContextInfo.webAbsoluteUrl + "/_api/SP.OAuth.Token/Acquire",
             headers: requestHeaders,
             type: "POST",
             data: JSON.stringify(resourceData),
-            success: function (data) {
+            success: (data) => {
                 let msGraphToken: string = data.access_token;
                 dfd.resolve(msGraphToken);
             },
-            error: function (jqxr, errorCode, errorThrown) {
+            error: (jqxr, errorCode, errorThrown) => {
                 console.log(jqxr.responseText);
                 dfd.reject("error");
             }
-        });
-       return dfd.promise();
+        }
+        $.ajax(ajaxSettings);
+        return dfd.promise();
     }
 
 }
