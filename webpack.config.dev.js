@@ -14,11 +14,11 @@ module.exports = Merge(CommonConfig, {
             "coreOptions": {
                 "checkin": true,
                 "checkinType": 1,
-                "siteUrl": ""
+                "siteUrl": "https://anoopkatti.sharepoint.com/sites/teamsite"
             },
             "credentialOptions": {
-                username: '',
-                password: ''
+                username: 'anoop@anoopkatti.onmicrosoft.com',
+                password: 'Young1818'
             },
             "fileOptions": {
                 "folder": "Style Library/test-webpack-sharepoint"

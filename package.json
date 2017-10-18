@@ -9,7 +9,7 @@
   "author": "Anoop",
   "license": "ISC",
   "dependencies": {
-    "@types/react": "^16.0.5",
+    "@types/react": "^15.0.4",
     "@types/react-dom": "^15.5.4",
     "react": "^15.6.1",
     "react-dom": "^15.6.1"
@@ -18,7 +18,7 @@
     "awesome-typescript-loader": "^3.2.3",
     "source-map-loader": "^0.2.1",
     "sp-pnp-js": "^2.0.8",
-    "spsave-webpack-plugin": "^1.0.5",
+    "spsave-webpack-plugin": "^1.0.7",
     "typescript": "^2.5.2",
     "webpack": "^3.5.5",
     "webpack-merge": "^4.1.0",

@@ -9,24 +9,24 @@ interface IGraphState {
 interface IDisplayProps {
     displayName: string;
     givenName: string;
+    jobTitle: string;
     mobilePhone: string;
     imageUrl: string;
 }
 
 export class Graph extends React.Component<GraphProps, IGraphState> {
-
     constructor(props: GraphProps) {
         super(props);
         this.state = {
             myData: {
                 displayName: "",
                 givenName: "",
+                jobTitle: "",
                 mobilePhone: "",
                 imageUrl: ""
             }
         };
     }
-
     public componentDidMount(): void {
         /* this.getName().then(r => {
             this.setState({
@@ -40,6 +40,7 @@ export class Graph extends React.Component<GraphProps, IGraphState> {
                     myData: {
                         displayName: r.displayName,
                         givenName: r.givenName,
+                        jobTitle: r.jobTitle,
                         mobilePhone: r.mobilePhone,
                         imageUrl: i
                     }
@@ -47,18 +48,30 @@ export class Graph extends React.Component<GraphProps, IGraphState> {
             })
         });
 
-        this.getMyPhoto();
-
     }
 
     public render(): React.ReactElement<GraphProps> {
         return (
-            <div>
-                <p>Your name is {this.state.myData.displayName},</p>
-                <p>Your given name is {this.state.myData.givenName},</p>
-                <p>Your mobile number is {this.state.myData.mobilePhone}</p>
-                <img src={this.state.myData.imageUrl} />
-            </div>);
+            <div className="ui card">
+            <div className="image">
+              <img src={this.state.myData.imageUrl} />
+            </div>
+            <div className="content">
+              <a className="header">{this.state.myData.displayName}</a>
+              <div className="meta">
+                <span className="date">{this.state.myData.givenName}</span>
+              </div>
+              <div className="description">
+              {this.state.myData.jobTitle}
+              </div>
+            </div>
+            <div className="extra content">
+              <a>
+                <i className="text telephone  icon"></i>
+                {this.state.myData.mobilePhone}
+              </a>
+            </div>
+          </div>);
     }
 
     /* private async getName(): Promise<string> {
@@ -83,7 +96,7 @@ export class Graph extends React.Component<GraphProps, IGraphState> {
         return dfd.promise();
     } */
 
-    private async getMyPhoto() {
+    /* private async getMyPhoto() {
         const msGraphToken = await this.getMSGraphAccessToken();
 
         var request = new XMLHttpRequest;
@@ -104,14 +117,14 @@ export class Graph extends React.Component<GraphProps, IGraphState> {
             }
         };
         request.send(null);
-    }
+    } */
 
     private async getMyPhotoDef(): Promise<string> {
         const msGraphToken = await this.getMSGraphAccessToken();
         let dfd: any = $.Deferred();
 
         var request = new XMLHttpRequest;
-        request.open("GET", "https://graph.microsoft.com/v1.0/me/Photos/48X48/$value");
+        request.open("GET", "https://graph.microsoft.com/v1.0/me/photo/$value");
         request.setRequestHeader("Authorization", "Bearer " + msGraphToken);
         request.responseType = "blob";
         request.onload = function () {
