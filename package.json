@@ -9,8 +9,11 @@
   "author": "Anoop",
   "license": "ISC",
   "dependencies": {
+    "@types/jquery": "^3.2.15",
     "@types/react": "^15.0.4",
     "@types/react-dom": "^15.5.4",
+    "jquery": "^3.2.1",
+    "office-ui-fabric-react": "^5.10.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1"
   },
